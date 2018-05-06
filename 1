@@ -1,0 +1,46 @@
+#Create VPC
+resource "aws_vpc" "default" {
+	cidr_block = "${var.vpc_cidr}"
+	tags	{
+		Name = "New_VPC"
+		}
+	}
+
+#Creating Public Subnet 
+
+resource "aws_subnet" "ap-south-1a" {
+	vpc_id = "${aws_vpc.default.id}"
+	cidr_block = "${var.Public_subnet1a_CIDR_ap-south-1a}"
+	availability_zone = "ap-south-1a"
+	tags	{
+		Name = "Public Subnet"
+		}
+	}
+resource "aws.subnet" "ap-south-1b"
+	vpc_id = "${aws_vpc.default.id}"
+	cidr_block = "${var.Public_subnet1b_CIDR_ap-south-1b}"
+	availability_zone = "ap-south-1b"
+
+#Internet Gateway for Publica Subnet
+resource "aws_internet_gateway" "default" {
+	vpc_id	= "${aws_vpc.default.id}"
+	tags	{
+		Name = "New_VPC_IGW"
+		}
+	}
+
+#Enabling route for Publica subnet
+resource "aws_route_table" "default" {
+	vpc_id = "${aws_vpc.default.id}"
+	route	{
+		cidr_block = "0.0.0.0/0"
+		gateway_id = "${aws_internet_gateway.default.id}"
+		}
+	}
+
+#Subnet association for Public Subnet
+resource "aws_route_table_association" "default" {
+	subnet_id = "${aws_subnet.default.id}"
+	route_table_id = "${aws_route_table.default.id}"
+	}
+

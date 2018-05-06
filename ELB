@@ -1,0 +1,53 @@
+resource "aws_elb" "example" {
+	name = "testELB"
+	subnets	=	["${aws_subnet.Public-1a.id}", "${aws_subnet.Public-1b.id}"]
+	instances = ["${aws_instance.WEB1.id}", "${aws_instance.WEB2.id}"]
+	listener {
+    		 instance_port     = 80
+   		 instance_protocol = "http"
+   		 lb_port           = 80
+   		 lb_protocol       = "http"
+  		}
+	}
+
+#--------------------------------------------------#
+                #1A- AVAILABILITY ZONE#
+#--------------------------------------------------#
+
+resource "aws_instance" "WEB1" {
+  ami = "${var.AMI_Name}"
+  instance_type = "${var.INS_type}"
+  subnet_id = "${aws_subnet.Private-1a.id}"
+  key_name = "${var.key_name}"
+  availability_zone = "${var.private1a_az}"
+  security_groups = ["${aws_security_group.private-1a.id}"]
+
+  user_data = <<-EOF
+  #!/bin/bash
+  echo "Hello, World" > index.html
+  nohup busybox httpd -f -p 80 &
+  EOF
+}
+
+#--------------------------------------------------#
+                #1B- AVAILABILITY ZONE#
+#--------------------------------------------------#
+
+resource "aws_instance" "WEB2" {
+  ami = "${var.AMI_Name}"
+  instance_type = "${var.INS_type}"
+  subnet_id = "${aws_subnet.Private-1b.id}"
+  key_name = "${var.key_name}"
+  availability_zone = "${var.private1b_az}"
+  security_groups = ["${aws_security_group.private-1a.id}"]
+
+  user_data = <<-EOF
+  #!/bin/bash
+  echo "Hello, World" > index.html
+  nohup busybox httpd -f -p 80 &
+  EOF
+}
+
+#--------------------------------------------------#
+#**************************************************#
+#--------------------------------------------------#

@@ -1,0 +1,27 @@
+#--------------------------------------------------#
+                #1A- AVAILABILITY ZONE#
+#--------------------------------------------------#
+
+resource "aws_instance" "WEB1" {
+	ami = "${var.AMI_Name}"
+	subnet_id = "${aws_subnet.Private_ap-south-1a.id}"
+	instance_type = "t2.micro"
+	key_name = "test_rkMarch"
+	availability_zone = "ap-south-1a"
+	}
+	
+#--------------------------------------------------#
+                #1B- AVAILABILITY ZONE#
+#--------------------------------------------------#
+
+resource "aws_instance" "WEB2" {
+	ami = "ami-531a4c3c"
+	subnet_id = "${aws_subnet.Private_ap-south-1b.id}"
+	instance_type = "t2.micro"
+	availability_zone = "ap-south-1b"
+	key_name = "test_rkMarch"
+	}
+
+#--------------------------------------------------#
+#**************************************************#
+#--------------------------------------------------#
